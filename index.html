@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bee Wise Eco Services</title>
+  <style>
+    :root {
+      --honey:      #D4850A;
+      --deep-amber: #8B5208;
+      --gold:       #F5C518;
+      --gold-light: #FFE066;
+      --cream:      #FFFDF4;
+      --warm:       #FFF8E5;
+      --forest:     #2D5016;
+      --dark-forest:#1A3A0E;
+      --strip-bg:   #4A2A06;
+      --text:       #2C1A06;
+      --muted:      #7A6040;
+      --strip-h:    190px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:Georgia,'Times New Roman',serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+    /* ─── HEADER STRIP ─────────────────────────────── */
+    .site-header{position:relative;z-index:100;}
+    .header-strip{
+      background:var(--strip-bg);
+      width:100%;height:var(--strip-h);
+      position:relative;overflow:hidden;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:6px;
+    }
+    .hc-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+    .header-title{
+      font-family:'Times New Roman',serif;
+      font-size:22px;color:#FFF8D0;
+      letter-spacing:2.5px;text-align:center;
+      z-index:2;position:relative;
+      text-shadow:0 2px 8px rgba(0,0,0,0.6);
+      padding:0 80px;
+    }
+    .bee-wrap{z-index:2;position:relative;width:200px;}
+
+    /* ─── NAV TOGGLE ─────────────────────────────── */
+    .nav-toggle{
+      position:absolute;top:16px;left:16px;z-index:300;
+      background:none;border:none;cursor:pointer;
+      display:flex;flex-direction:column;gap:5px;padding:8px;
+    }
+    .nav-toggle span{
+      display:block;width:26px;height:2px;
+      background:#FFF8D0;border-radius:2px;
+      transition:all .3s;
+    }
+    .nav-toggle:hover span{background:var(--gold);}
+
+    /* ─── CART BUTTON ─────────────────────────────── */
+    .cart-wrap{
+      position:absolute;top:14px;right:16px;z-index:300;
+    }
+    .cart-btn{
+      background:none;border:none;cursor:pointer;
+      color:#FFF8D0;position:relative;
+      display:flex;align-items:center;gap:6px;
+      font-size:13px;font-family:Georgia,serif;
+      transition:color .2s;padding:6px;
+    }
+    .cart-btn:hover{color:var(--gold);}
+    .cart-btn svg{width:28px;height:28px;}
+    .cart-badge{
+      position:absolute;top:-4px;right:-4px;
+      background:var(--gold);color:#1A1200;
+      font-size:10px;font-weight:700;font-family:Arial,sans-serif;
+      border-radius:50%;width:17px;height:17px;
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;transform:scale(0);transition:all .25s;
+    }
+    .cart-badge.show{opacity:1;transform:scale(1);}
+
+    /* ─── SLIDE-OUT NAV ─────────────────────────────── */
+    .nav-overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.55);z-index:900;
+      opacity:0;pointer-events:none;transition:opacity .35s;
+    }
+    .nav-overlay.open{opacity:1;pointer-events:all;}
+    .nav-panel{
+      position:fixed;top:0;left:0;
+      width:290px;height:100vh;
+      background:#0C0C0C;z-index:1000;
+      transform:translateX(-100%);
+      transition:transform .38s cubic-bezier(.4,0,.2,1);
+      overflow-y:auto;padding:65px 0 40px;
+    }
+    .nav-panel.open{transform:translateX(0);}
+    .nav-close{
+      position:absolute;top:18px;right:18px;
+      background:none;border:none;cursor:pointer;
+      color:#FFF8D0;font-size:22px;line-height:1;
+      transition:color .2s;
+    }
+    .nav-close:hover{color:var(--gold);}
+    .nav-brand{
+      padding:0 28px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      margin-bottom:8px;
+    }
+    .nav-brand p{font-family:'Times New Roman',serif;font-size:15px;color:#FFF8D0;letter-spacing:.5px;}
+    .nav-brand small{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;}
+    .nav-cat{
+      font-family:'Times New Roman',serif;
+      font-size:10px;letter-spacing:3px;text-transform:uppercase;
+      color:var(--gold);padding:20px 28px 6px;
+    }
+    .nav-link{
+      display:block;padding:11px 28px 11px 44px;
+      color:#DDD5C0;text-decoration:none;font-size:15px;
+      cursor:pointer;border-left:3px solid transparent;
+      transition:all .22s;
+    }
+    .nav-link:hover{color:var(--gold-light);border-left-color:var(--gold);background:rgba(245,197,24,.06);}
+    .nav-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:10px 0;}
+
+    /* ─── MAIN ─────────────────────────────── */
+    .main-content{flex:1;max-width:1120px;width:100%;margin:0 auto;padding:52px 22px 90px;}
+
+    /* ─── PAGE TRANSITIONS ─────────────────── */
+    .page-enter{animation:fadeIn .35s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+
+    /* ─── SHARED TEXT ─────────────────────────────── */
+    .page-title{
+      font-family:'Times New Roman',serif;font-size:30px;
+      color:var(--deep-amber);text-align:center;margin-bottom:10px;
+    }
+    .page-subtitle{
+      text-align:center;color:var(--muted);font-size:15px;
+      max-width:640px;margin:0 auto 48px;line-height:1.9;
+    }
+    .divider{width:56px;height:3px;background:var(--honey);margin:22px auto;border-radius:2px;}
+
+    /* ─── HOME ─────────────────────────────── */
+    .home-intro{text-align:center;max-width:760px;margin:0 auto 56px;}
+    .home-intro h2{font-family:'Times New Roman',serif;font-size:27px;color:var(--deep-amber);margin-bottom:18px;}
+    .home-intro p{font-size:15.5px;line-height:1.95;color:var(--text);margin-bottom:14px;}
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:28px;margin-bottom:62px;}
+    .svc-card{
+      background:var(--warm);border:1px solid rgba(212,133,10,.18);border-radius:10px;
+      padding:34px 26px;text-align:center;cursor:pointer;transition:all .3s;
+    }
+    .svc-card:hover{border-color:var(--honey);box-shadow:0 10px 34px rgba(212,133,10,.16);transform:translateY(-4px);}
+    .svc-card .ico{font-size:38px;margin-bottom:14px;}
+    .svc-card h3{font-family:'Times New Roman',serif;font-size:20px;color:var(--deep-amber);margin-bottom:10px;}
+    .svc-card p{font-size:14px;line-height:1.7;color:var(--muted);}
+
+    .supply-section h2{font-family:'Times New Roman',serif;font-size:24px;color:var(--deep-amber);text-align:center;margin-bottom:8px;}
+    .supply-section .page-subtitle{margin-bottom:28px;}
+    .supply-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+    .supply-item{
+      background:var(--warm);border-left:3px solid var(--honey);
+      border-radius:0 8px 8px 0;padding:13px 16px;font-size:14px;
+      color:var(--text);line-height:1.5;
+    }
+    .supply-item strong{display:block;color:var(--deep-amber);font-size:14.5px;margin-bottom:3px;}
+
+    /* ─── PRODUCTS ─────────────────────────────── */
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:26px;}
+    .product-card{
+      background:var(--warm);border-radius:10px;overflow:hidden;
+      border:1px solid rgba(212,133,10,.18);transition:all .3s;
+    }
+    .product-card:hover{box-shadow:0 10px 36px rgba(212,133,10,.2);transform:translateY(-4px);}
+    .product-img{
+      width:100%;height:185px;display:flex;align-items:center;
+      justify-content:center;background:linear-gradient(135deg,#F7EAC0,#EDD080);
+    }
+    .product-info{padding:16px 18px 18px;}
+    .product-name{font-family:'Times New Roman',serif;font-size:17px;color:var(--deep-amber);margin-bottom:5px;}
+    .product-desc{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:12px;}
+    .product-price{font-size:19px;font-weight:700;color:var(--forest);font-family:Arial,sans-serif;letter-spacing:-.3px;}
+    .atc-btn{
+      width:100%;margin-top:11px;padding:10px;
+      background:var(--honey);color:#FFF8D0;border:none;border-radius:7px;
+      font-size:14px;font-family:Georgia,serif;cursor:pointer;transition:background .2s;
+    }
+    .atc-btn:hover{background:var(--deep-amber);}
+
+    /* ─── PROPOLIS INFO ─────────────────────────────── */
+    .info-box{
+      background:rgba(245,197,24,.1);border:1px solid rgba(212,133,10,.2);
+      border-radius:10px;padding:26px 28px;margin-bottom:38px;
+    }
+    .info-box h3{font-family:'Times New Roman',serif;font-size:20px;color:var(--deep-amber);margin-bottom:10px;}
+    .info-box p{font-size:14.5px;line-height:1.85;color:var(--text);margin-bottom:10px;}
+    .caution-box{
+      background:rgba(160,60,10,.07);border-left:3px solid #A03C0A;
+      padding:13px 17px;border-radius:0 8px 8px 0;margin-top:12px;
+    }
+    .caution-box p{color:#6B2E0A;font-size:13.5px;margin:0;line-height:1.7;}
+    .caution-box strong{display:block;margin-bottom:4px;}
+
+    /* ─── SERVICE PAGES ─────────────────────────────── */
+    .svc-content{max-width:800px;margin:0 auto;}
+    .svc-content h3{font-family:'Times New Roman',serif;font-size:21px;color:var(--deep-amber);margin:32px 0 10px;}
+    .svc-content p{font-size:15px;line-height:1.95;color:var(--text);margin-bottom:14px;}
+    .benefit-list{display:flex;flex-direction:column;gap:12px;margin:18px 0;}
+    .benefit{display:flex;gap:14px;align-items:flex-start;background:var(--warm);border-radius:9px;padding:15px 18px;}
+    .benefit-ico{font-size:22px;flex-shrink:0;margin-top:1px;}
+    .benefit-text strong{display:block;color:var(--deep-amber);font-size:15px;margin-bottom:3px;}
+    .benefit-text{font-size:14px;line-height:1.65;color:var(--text);}
+    .coverage-badge{
+      display:inline-block;background:rgba(45,80,22,.12);color:var(--forest);
+      border:1px solid rgba(45,80,22,.25);border-radius:20px;
+      padding:6px 16px;font-size:13px;margin:4px 4px 4px 0;
+    }
+
+    /* ─── CART ─────────────────────────────── */
+    .cart-wrap-page{max-width:680px;margin:0 auto;}
+    .cart-item{
+      display:flex;align-items:center;gap:14px;
+      padding:15px 16px;background:var(--warm);border-radius:9px;
+      margin-bottom:10px;border:1px solid rgba(212,133,10,.15);
+    }
+    .cart-item-img{width:52px;height:52px;flex-shrink:0;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#F7EAC0,#EDD080);}
+    .cart-item-info{flex:1;}
+    .cart-item-name{font-family:Georgia,serif;font-size:15px;color:var(--text);}
+    .cart-item-cat{font-size:12px;color:var(--muted);margin-top:2px;}
+    .cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+    .qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid rgba(212,133,10,.3);background:none;cursor:pointer;font-size:15px;color:var(--deep-amber);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .qty-btn:hover{background:var(--honey);color:#fff;border-color:var(--honey);}
+    .qty-num{font-size:14px;font-family:Arial,sans-serif;min-width:22px;text-align:center;}
+    .cart-item-price{font-size:16px;font-weight:700;color:var(--forest);font-family:Arial,sans-serif;}
+    .cart-remove{background:none;border:none;cursor:pointer;color:#bbb;font-size:20px;line-height:1;transition:color .2s;margin-left:4px;}
+    .cart-remove:hover{color:#cc3300;}
+    .cart-summary{background:var(--warm);border-radius:11px;padding:24px 26px;margin-top:22px;border:1px solid rgba(212,133,10,.2);}
+    .cart-summary h3{font-family:'Times New Roman',serif;font-size:20px;color:var(--deep-amber);margin-bottom:16px;}
+    .sum-row{display:flex;justify-content:space-between;padding:9px 0;font-size:15px;border-bottom:1px solid rgba(212,133,10,.1);}
+    .sum-row:last-of-type{border-bottom:none;}
+    .sum-row.total{font-weight:700;font-size:18px;color:var(--deep-amber);padding-top:14px;}
+    .delivery-opts{margin:20px 0;}
+    .delivery-opts h4{font-family:Georgia,serif;font-size:15px;color:var(--text);margin-bottom:12px;}
+    .d-option{
+      display:flex;align-items:center;gap:10px;padding:13px 16px;
+      background:#fff;border:2px solid rgba(212,133,10,.2);border-radius:9px;
+      cursor:pointer;margin-bottom:9px;font-size:14px;transition:border-color .2s;
+    }
+    .d-option:has(input:checked){border-color:var(--honey);background:rgba(245,197,24,.05);}
+    .d-option input{accent-color:var(--honey);}
+    .d-note{
+      background:rgba(245,197,24,.14);border-left:3px solid var(--gold);
+      padding:11px 16px;font-size:13px;color:var(--text);border-radius:0 7px 7px 0;margin-top:6px;
+    }
+    .checkout-btn{
+      width:100%;padding:16px;background:var(--forest);color:#fff;
+      border:none;border-radius:9px;font-size:16px;font-family:Georgia,serif;
+      cursor:pointer;transition:background .2s;margin-top:18px;letter-spacing:.4px;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .checkout-btn:hover{background:var(--dark-forest);}
+    .empty-cart{text-align:center;padding:70px 20px;color:var(--muted);}
+    .empty-cart .eco{font-size:52px;margin-bottom:16px;}
+    .empty-cart p{font-size:16px;margin-bottom:24px;line-height:1.7;}
+    .shop-btn{
+      padding:12px 30px;background:var(--honey);color:#FFF8D0;
+      border:none;border-radius:8px;font-size:15px;font-family:Georgia,serif;
+      cursor:pointer;transition:background .2s;
+    }
+    .shop-btn:hover{background:var(--deep-amber);}
+
+    /* ─── FOOTER ─────────────────────────────── */
+    .site-footer{
+      background:#14100A;color:#B8A080;
+      text-align:center;padding:42px 20px;margin-top:auto;
+    }
+    .footer-name{font-family:'Times New Roman',serif;font-size:17px;color:var(--gold-light);margin-bottom:6px;letter-spacing:1px;}
+    .footer-tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#786050;margin-bottom:20px;}
+    .footer-bar{width:40px;height:2px;background:var(--honey);margin:16px auto;border-radius:2px;}
+    .footer-contact{font-size:14px;line-height:2.2;}
+    .footer-contact a{color:#B8A080;text-decoration:none;transition:color .2s;}
+    .footer-contact a:hover{color:var(--gold);}
+    .footer-social{margin-top:18px;font-size:13px;color:#786050;letter-spacing:.5px;}
+    .footer-social a{color:#A09070;text-decoration:none;transition:color .2s;}
+    .footer-social a:hover{color:var(--gold);}
+    .footer-copy{margin-top:22px;font-size:11px;color:#4A3828;letter-spacing:1px;}
+
+    /* ─── TOAST ─────────────────────────────── */
+    .toast{
+      position:fixed;bottom:28px;right:28px;
+      background:var(--forest);color:#E8F5E0;
+      padding:11px 22px;border-radius:8px;
+      font-size:14px;font-family:Georgia,serif;z-index:9999;
+      opacity:0;transform:translateY(16px) scale(.95);
+      transition:all .3s;pointer-events:none;
+      box-shadow:0 6px 24px rgba(0,0,0,.25);
+    }
+    .toast.show{opacity:1;transform:translateY(0) scale(1);}
+
+    /* ─── RESPONSIVE ─────────────────────────────── */
+    @media(max-width:680px){
+      :root{--strip-h:170px;}
+      .header-title{font-size:18px;letter-spacing:1px;}
+      .bee-wrap{width:155px;}
+      .product-grid{grid-template-columns:1fr 1fr;gap:14px;}
+      .product-img{height:150px;}
+      .main-content{padding:36px 16px 70px;}
+      .services-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:420px){
+      .product-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAV OVERLAY & PANEL
+════════════════════════════════════════════ -->
+<div id="navOverlay" class="nav-overlay" onclick="closeNav()"></div>
+<nav id="navPanel" class="nav-panel" role="navigation" aria-label="Main navigation">
+  <button class="nav-close" onclick="closeNav()" aria-label="Close menu">✕</button>
+  <div class="nav-brand">
+    <p>Bee Wise Eco Services</p>
+    <small>beewiseeco.co.za</small>
+  </div>
+
+  <div class="nav-cat">Services</div>
+  <span class="nav-link" onclick="go('pollination')">🌸 &nbsp;Pollination Services</span>
+  <span class="nav-link" onclick="go('removals')">🐝 &nbsp;Bee Removals</span>
+
+  <hr class="nav-divider"/>
+  <div class="nav-cat">Products</div>
+  <span class="nav-link" onclick="go('honey')">🍯 &nbsp;Honey</span>
+  <span class="nav-link" onclick="go('beeswax')">🕯️ &nbsp;Beeswax</span>
+  <span class="nav-link" onclick="go('propolis')">💊 &nbsp;Propolis</span>
+
+  <hr class="nav-divider"/>
+  <span class="nav-link" onclick="go('home')" style="color:#AAA;padding-left:28px;">← Home</span>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     SITE HEADER (consistent across all pages)
+════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-strip">
+
+    <!-- Honeycomb SVG background -->
+    <svg class="hc-bg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="honeycomb" x="0" y="0" width="34.64" height="60"
+                 patternUnits="userSpaceOnUse">
+          <!-- Row 1 hex, center (17.32, 20) -->
+          <polygon points="17.32,0 34.64,10 34.64,30 17.32,40 0,30 0,10"
+                   fill="none" stroke="rgba(245,197,24,0.32)" stroke-width="1.1"/>
+          <!-- Row 2 left hex (partial, center at 0,50) -->
+          <polygon points="0,30 17.32,40 17.32,60 0,70 -17.32,60 -17.32,40"
+                   fill="none" stroke="rgba(245,197,24,0.32)" stroke-width="1.1"/>
+          <!-- Row 2 right hex (partial, center at 34.64,50) -->
+          <polygon points="34.64,30 51.96,40 51.96,60 34.64,70 17.32,60 17.32,40"
+                   fill="none" stroke="rgba(245,197,24,0.32)" stroke-width="1.1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#honeycomb)"/>
+    </svg>
+
+    <!-- Nav toggle -->
+    <button class="nav-toggle" onclick="openNav()" aria-label="Open navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Cart button -->
+    <div class="cart-wrap">
+      <button class="cart-btn" onclick="go('cart')" aria-label="Shopping cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span id="cartBadge" class="cart-badge">0</span>
+      </button>
+    </div>
+
+    <!-- Title -->
+    <div class="header-title">Bee Wise Eco Services</div>
+
+    <!-- Bee SVG (top-down stencil view of African honey bee) -->
+    <div class="bee-wrap" aria-label="African honey bee illustration">
+      <svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <!-- Wings — translucent, spread wide -->
+        <!-- Left front wing -->
+        <ellipse cx="62" cy="63" rx="58" ry="17" fill="rgba(255,250,210,0.55)" stroke="rgba(255,230,120,0.4)" stroke-width="0.8" transform="rotate(-28,62,63)"/>
+        <!-- Left hind wing -->
+        <ellipse cx="70" cy="83" rx="40" ry="12" fill="rgba(255,250,210,0.4)" stroke="rgba(255,230,120,0.3)" stroke-width="0.7" transform="rotate(-18,70,83)"/>
+        <!-- Right front wing -->
+        <ellipse cx="138" cy="63" rx="58" ry="17" fill="rgba(255,250,210,0.55)" stroke="rgba(255,230,120,0.4)" stroke-width="0.8" transform="rotate(28,138,63)"/>
+        <!-- Right hind wing -->
+        <ellipse cx="130" cy="83" rx="40" ry="12" fill="rgba(255,250,210,0.4)" stroke="rgba(255,230,120,0.3)" stroke-width="0.7" transform="rotate(18,130,83)"/>
+
+        <!-- Legs (3 per side) -->
+        <line x1="88" y1="60" x2="50" y2="48" stroke="#260E00" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="87" y1="70" x2="46" y2="70" stroke="#260E00" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="89" y1="80" x2="54" y2="93" stroke="#260E00" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="112" y1="60" x2="150" y2="48" stroke="#260E00" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="113" y1="70" x2="154" y2="70" stroke="#260E00" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="111" y1="80" x2="146" y2="93" stroke="#260E00" stroke-width="2.2" stroke-linecap="round"/>
+
+        <!-- Thorax -->
+        <ellipse cx="100" cy="68" rx="15" ry="17" fill="#1E0900"/>
+        <ellipse cx="100" cy="63" rx="9" ry="7" fill="#3A1500" opacity="0.7"/>
+
+        <!-- Abdomen -->
+        <ellipse cx="100" cy="110" rx="17" ry="32" fill="#1E0900"/>
+        <clipPath id="abc"><ellipse cx="100" cy="110" rx="17" ry="32"/></clipPath>
+        <g clip-path="url(#abc)">
+          <rect x="81" y="84"  width="38" height="7"  fill="#E8A010" rx="1" opacity="0.95"/>
+          <rect x="81" y="97"  width="38" height="7"  fill="#E8A010" rx="1" opacity="0.95"/>
+          <rect x="81" y="110" width="38" height="7"  fill="#E8A010" rx="1" opacity="0.95"/>
+          <rect x="81" y="123" width="38" height="6"  fill="#E8A010" rx="1" opacity="0.8"/>
+        </g>
+        <!-- Abdomen highlight -->
+        <ellipse cx="96" cy="98" rx="5" ry="4" fill="#FFFFFF" opacity="0.06"/>
+
+        <!-- Stinger -->
+        <polygon points="100,141 97,148 103,148" fill="#1E0900"/>
+
+        <!-- Head -->
+        <ellipse cx="100" cy="45" rx="13" ry="11" fill="#1E0900"/>
+        <!-- Compound eyes -->
+        <ellipse cx="92"  cy="42" rx="4"  ry="4.5" fill="#1A3C18"/>
+        <ellipse cx="108" cy="42" rx="4"  ry="4.5" fill="#1A3C18"/>
+        <ellipse cx="91"  cy="41" rx="1.5" ry="1.5" fill="#2A6030" opacity="0.6"/>
+        <ellipse cx="107" cy="41" rx="1.5" ry="1.5" fill="#2A6030" opacity="0.6"/>
+
+        <!-- Antennae -->
+        <path d="M97,35 Q86,22 76,10" stroke="#1E0900" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M103,35 Q114,22 124,10" stroke="#1E0900" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="76"  cy="10" r="3.5" fill="#1E0900"/>
+        <circle cx="124" cy="10" r="3.5" fill="#1E0900"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT AREA
+════════════════════════════════════════════ -->
+<main class="main-content" id="mainContent"></main>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-name">Bee Wise Eco Services</div>
+  <div class="footer-tag">Urban Apiarists · Gauteng, South Africa</div>
+  <div class="footer-bar"></div>
+  <div class="footer-contact">
+    <div>📞 <a href="tel:0813054398">081 305 4398</a></div>
+    <div>✉️ <a href="mailto:ryangebhardt0@gmail.com">ryangebhardt0@gmail.com</a></div>
+    <div>🌐 <a href="https://beewiseeco.co.za" target="_blank">beewiseeco.co.za</a></div>
+  </div>
+  <div class="footer-social">Follow us · <a href="https://instagram.com/beewiseeco" target="_blank">@beewiseeco</a></div>
+  <div class="footer-copy">© 2025 Bee Wise Eco Services · All rights reserved</div>
+</footer>
+
+<!-- Toast notification -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════
+     INLINE SVG PRODUCT ILLUSTRATIONS
+════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="img-honey-raw" viewBox="0 0 100 120">
+    <rect x="18" y="14" width="64" height="14" rx="5" fill="#7A3E00"/>
+    <rect x="22" y="17" width="56" height="8" rx="3" fill="#9B5200"/>
+    <path d="M22,28 Q18,28 17,32 L14,92 Q13,104 26,104 L74,104 Q87,104 86,92 L83,32 Q82,28 78,28 Z" fill="#D4850A"/>
+    <path d="M22,28 L78,28 L83,92 Q82,100 74,100 L26,100 Q18,100 17,92 Z" fill="#B8680A"/>
+    <ellipse cx="50" cy="58" rx="20" ry="10" fill="#C87208" opacity="0.5"/>
+    <rect x="26" y="50" width="48" height="32" rx="4" fill="#FFF8E0" opacity="0.92"/>
+    <text x="50" y="63" text-anchor="middle" font-size="7.5" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">RAW</text>
+    <text x="50" y="73" text-anchor="middle" font-size="6.5" fill="#8B5000" font-family="Georgia,serif">HONEY</text>
+    <path d="M44,104 Q44,114 47,116 Q50,118 50,112 L50,104" fill="#B8680A"/>
+  </symbol>
+
+  <symbol id="img-honey-creamed" viewBox="0 0 100 120">
+    <rect x="18" y="14" width="64" height="14" rx="5" fill="#5A3200"/>
+    <rect x="22" y="17" width="56" height="8" rx="3" fill="#7A4600"/>
+    <path d="M22,28 Q18,28 17,32 L14,92 Q13,104 26,104 L74,104 Q87,104 86,92 L83,32 Q82,28 78,28 Z" fill="#F5E5C0"/>
+    <path d="M22,28 L78,28 L83,92 Q82,100 74,100 L26,100 Q18,100 17,92 Z" fill="#EDD8A0"/>
+    <rect x="26" y="50" width="48" height="32" rx="4" fill="#FFF8E0" opacity="0.95"/>
+    <text x="50" y="61" text-anchor="middle" font-size="6.5" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">CREAMED</text>
+    <text x="50" y="72" text-anchor="middle" font-size="6.5" fill="#8B5000" font-family="Georgia,serif">HONEY</text>
+  </symbol>
+
+  <symbol id="img-honey-comb" viewBox="0 0 100 120">
+    <rect x="18" y="14" width="64" height="14" rx="5" fill="#7A3E00"/>
+    <path d="M22,28 Q18,28 17,32 L14,92 Q13,104 26,104 L74,104 Q87,104 86,92 L83,32 Q82,28 78,28 Z" fill="#C87A08" opacity="0.8"/>
+    <!-- honeycomb chunk inside jar -->
+    <polygon points="50,40 58,44 58,53 50,57 42,53 42,44" fill="#E8A010"/>
+    <polygon points="58,44 66,48 66,57 58,61 50,57 50,48" fill="#D49008"/>
+    <polygon points="42,44 50,48 50,57 42,61 34,57 34,48" fill="#D49008"/>
+    <polygon points="50,57 58,61 58,70 50,74 42,70 42,61" fill="#C87A08"/>
+    <rect x="26" y="80" width="48" height="20" rx="4" fill="#FFF8E0" opacity="0.88"/>
+    <text x="50" y="91" text-anchor="middle" font-size="6" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">WITH COMB</text>
+    <text x="50" y="98" text-anchor="middle" font-size="5.5" fill="#8B5000" font-family="Georgia,serif">RAW HONEY</text>
+  </symbol>
+
+  <symbol id="img-honey-bulk" viewBox="0 0 100 120">
+    <path d="M18,20 Q18,10 24,10 L76,10 Q82,10 82,20 L88,100 Q88,112 76,112 L24,112 Q12,112 12,100 Z" fill="#D4850A"/>
+    <path d="M20,20 L80,20 L86,100 Q86,108 76,108 L24,108 Q14,108 14,100 Z" fill="#B8680A"/>
+    <rect x="22" y="8" width="56" height="16" rx="6" fill="#7A3E00"/>
+    <rect x="26" y="55" width="48" height="35" rx="4" fill="#FFF8E0" opacity="0.92"/>
+    <text x="50" y="68" text-anchor="middle" font-size="7" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">BULK</text>
+    <text x="50" y="78" text-anchor="middle" font-size="6.5" fill="#8B5000" font-family="Georgia,serif">RAW HONEY</text>
+    <text x="50" y="87" text-anchor="middle" font-size="6" fill="#A06000" font-family="Arial,sans-serif">1 kg</text>
+  </symbol>
+
+  <symbol id="img-beeswax-lip" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="60" rx="34" ry="12" fill="#B8860A" opacity="0.4"/>
+    <rect x="22" y="32" width="56" height="34" rx="28" fill="#E8C060"/>
+    <rect x="22" y="32" width="56" height="16" rx="16" fill="#F5D070"/>
+    <rect x="24" y="40" width="52" height="8" rx="8" fill="#EDD060" opacity="0.6"/>
+    <rect x="28" y="56" width="44" height="10" rx="5" fill="#FFF8E0" opacity="0.85"/>
+    <text x="50" y="64" text-anchor="middle" font-size="5.5" fill="#7A3E00" font-family="Georgia,serif">LIP BALM</text>
+    <ellipse cx="50" cy="32" rx="28" ry="8" fill="#F0C050"/>
+    <ellipse cx="50" cy="30" rx="24" ry="5" fill="#F8D060"/>
+  </symbol>
+
+  <symbol id="img-beeswax-moist" viewBox="0 0 100 120">
+    <ellipse cx="50" cy="95" rx="32" ry="8" fill="#B8860A" opacity="0.3"/>
+    <path d="M20,50 Q20,32 50,32 Q80,32 80,50 L82,88 Q82,100 50,100 Q18,100 18,88 Z" fill="#E8C060"/>
+    <path d="M20,50 L80,50 L82,88 Q82,96 50,96 Q18,96 18,88 Z" fill="#D4A840"/>
+    <rect x="22" y="30" width="56" height="24" rx="12" fill="#F0C850"/>
+    <ellipse cx="50" cy="30" rx="28" ry="8" fill="#F8D460"/>
+    <rect x="24" y="62" width="52" height="26" rx="4" fill="#FFF8E0" opacity="0.92"/>
+    <text x="50" y="74" text-anchor="middle" font-size="5.5" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">BEESWAX</text>
+    <text x="50" y="83" text-anchor="middle" font-size="5.5" fill="#8B5000" font-family="Georgia,serif">MOISTURISER</text>
+  </symbol>
+
+  <symbol id="img-beeswax-candle" viewBox="0 0 100 140">
+    <!-- flame -->
+    <ellipse cx="50" cy="18" rx="5" ry="9" fill="#FF9A00" opacity="0.9"/>
+    <ellipse cx="50" cy="22" rx="3" ry="5" fill="#FFEB00"/>
+    <!-- wick -->
+    <line x1="50" y1="28" x2="50" y2="36" stroke="#2A1200" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- candle body -->
+    <rect x="28" y="36" width="44" height="90" rx="5" fill="#F0C850"/>
+    <rect x="28" y="36" width="44" height="15" rx="5" fill="#F8D870"/>
+    <!-- drips -->
+    <path d="M36,51 Q36,60 39,62 Q42,64 42,57 L42,51" fill="#F8D870" opacity="0.7"/>
+    <path d="M62,51 Q62,56 64,58 Q66,60 66,54 L66,51" fill="#F8D870" opacity="0.7"/>
+    <!-- label -->
+    <rect x="32" y="82" width="36" height="26" rx="3" fill="#FFF8E0" opacity="0.9"/>
+    <text x="50" y="92" text-anchor="middle" font-size="5.5" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">BEESWAX</text>
+    <text x="50" y="101" text-anchor="middle" font-size="5.5" fill="#8B5000" font-family="Georgia,serif">CANDLE</text>
+  </symbol>
+
+  <symbol id="img-beeswax-sheet" viewBox="0 0 100 100">
+    <!-- stacked sheets -->
+    <rect x="12" y="55" width="76" height="28" rx="4" fill="#C8900A" opacity="0.5" transform="rotate(-3,50,70)"/>
+    <rect x="12" y="50" width="76" height="28" rx="4" fill="#D4A020" opacity="0.7" transform="rotate(2,50,65)"/>
+    <rect x="12" y="44" width="76" height="30" rx="4" fill="#E8B830"/>
+    <!-- honeycomb texture on top sheet -->
+    <line x1="16" y1="50" x2="84" y2="50" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="16" y1="56" x2="84" y2="56" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="16" y1="62" x2="84" y2="62" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="16" y1="68" x2="84" y2="68" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="28" y1="44" x2="22" y2="74" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="40" y1="44" x2="34" y2="74" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="52" y1="44" x2="46" y2="74" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="64" y1="44" x2="58" y2="74" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <line x1="76" y1="44" x2="70" y2="74" stroke="#C89010" stroke-width="0.6" opacity="0.6"/>
+    <rect x="22" y="18" width="56" height="28" rx="4" fill="#FFF8E0" opacity="0.9"/>
+    <text x="50" y="29" text-anchor="middle" font-size="5.5" fill="#7A3E00" font-family="Georgia,serif" font-weight="bold">FOUNDATION</text>
+    <text x="50" y="38" text-anchor="middle" font-size="5.5" fill="#8B5000" font-family="Georgia,serif">BEESWAX</text>
+    <text x="50" y="44" text-anchor="middle" font-size="5" fill="#A06000" font-family="Arial,sans-serif">SHEETS</text>
+  </symbol>
+
+  <symbol id="img-propolis-tincture" viewBox="0 0 100 140">
+    <!-- dropper top -->
+    <ellipse cx="50" cy="20" rx="12" ry="5" fill="#4A3060"/>
+    <rect x="46" y="8" width="8" height="14" rx="3" fill="#3A2050"/>
+    <path d="M50,22 L50,32" stroke="#B0A0C0" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <!-- bottle body -->
+    <path d="M32,35 Q28,35 27,42 L24,110 Q23,122 36,122 L64,122 Q77,122 76,110 L73,42 Q72,35 68,35 Z" fill="#5A3880"/>
+    <path d="M32,35 L68,35 L73,110 Q72,118 64,118 L36,118 Q28,118 27,110 Z" fill="#4A2870" opacity="0.7"/>
+    <!-- amber propolis colour inside -->
+    <path d="M34,60 L66,60 L71,110 Q70,116 64,116 L36,116 Q30,116 29,110 Z" fill="#8B5A00" opacity="0.5"/>
+    <rect x="32" y="34" width="36" height="12" rx="6" fill="#6A4090"/>
+    <!-- label -->
+    <rect x="28" y="70" width="44" height="36" rx="4" fill="#FFF8F8" opacity="0.92"/>
+    <text x="50" y="82" text-anchor="middle" font-size="5.5" fill="#4A1060" font-family="Georgia,serif" font-weight="bold">PROPOLIS</text>
+    <text x="50" y="91" text-anchor="middle" font-size="5" fill="#6A2080" font-family="Georgia,serif">TINCTURE</text>
+    <text x="50" y="100" text-anchor="middle" font-size="5" fill="#8B4000" font-family="Arial,sans-serif">30 ml</text>
+  </symbol>
+
+  <symbol id="img-propolis-capsules" viewBox="0 0 100 130">
+    <!-- bottle -->
+    <rect x="26" y="22" width="48" height="80" rx="10" fill="#E8E0F0"/>
+    <rect x="26" y="22" width="48" height="30" rx="10" fill="#D0C8E8"/>
+    <rect x="24" y="14" width="52" height="18" rx="8" fill="#8060A0"/>
+    <rect x="28" y="17" width="44" height="10" rx="5" fill="#9070B0"/>
+    <!-- label -->
+    <rect x="30" y="58" width="40" height="36" rx="4" fill="#FFF8F8" opacity="0.95"/>
+    <text x="50" y="70" text-anchor="middle" font-size="5.5" fill="#4A1060" font-family="Georgia,serif" font-weight="bold">PROPOLIS</text>
+    <text x="50" y="79" text-anchor="middle" font-size="5" fill="#6A2080" font-family="Georgia,serif">CAPSULES</text>
+    <text x="50" y="88" text-anchor="middle" font-size="5" fill="#8B4000" font-family="Arial,sans-serif">60 caps</text>
+    <!-- capsules peeking out bottom -->
+    <ellipse cx="42" cy="108" rx="8" ry="5" fill="#9070B0"/>
+    <ellipse cx="58" cy="108" rx="8" ry="5" fill="#7050A0"/>
+    <ellipse cx="50" cy="115" rx="8" ry="5" fill="#8060B0"/>
+  </symbol>
+
+  <symbol id="img-propolis-spray" viewBox="0 0 100 140">
+    <!-- spray bottle -->
+    <path d="M38,30 L62,30 L68,35 L68,118 Q68,124 62,124 L38,124 Q32,124 32,118 L32,35 Z" fill="#7050A0"/>
+    <path d="M38,30 L62,30 L68,35 L68,60 L32,60 L32,35 Z" fill="#8060B0"/>
+    <!-- pump top -->
+    <rect x="44" y="14" width="12" height="20" rx="5" fill="#6040A0"/>
+    <path d="M50,14 L50,8 L70,8 L70,18 L60,18" stroke="#5030A0" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- label -->
+    <rect x="35" y="68" width="30" height="40" rx="4" fill="#FFF8F8" opacity="0.92"/>
+    <text x="50" y="80" text-anchor="middle" font-size="5" fill="#4A1060" font-family="Georgia,serif" font-weight="bold">PROPOLIS</text>
+    <text x="50" y="89" text-anchor="middle" font-size="4.5" fill="#6A2080" font-family="Georgia,serif">THROAT</text>
+    <text x="50" y="98" text-anchor="middle" font-size="4.5" fill="#6A2080" font-family="Georgia,serif">SPRAY</text>
+    <text x="50" y="105" text-anchor="middle" font-size="4.5" fill="#8B4000" font-family="Arial,sans-serif">30 ml</text>
+  </symbol>
+
+  <symbol id="img-propolis-cream" viewBox="0 0 100 110">
+    <ellipse cx="50" cy="82" rx="32" ry="9" fill="#7050A0" opacity="0.3"/>
+    <path d="M20,46 Q20,28 50,28 Q80,28 80,46 L82,80 Q82,90 50,90 Q18,90 18,80 Z" fill="#8060B0"/>
+    <path d="M22,46 L78,46 L80,80 Q80,86 50,86 Q20,86 20,80 Z" fill="#6A50A0"/>
+    <rect x="22" y="26" width="56" height="24" rx="12" fill="#9070C0"/>
+    <ellipse cx="50" cy="26" rx="28" ry="8" fill="#A080D0"/>
+    <rect x="26" y="58" width="48" height="22" rx="4" fill="#FFF8F8" opacity="0.92"/>
+    <text x="50" y="68" text-anchor="middle" font-size="5.5" fill="#4A1060" font-family="Georgia,serif" font-weight="bold">PROPOLIS</text>
+    <text x="50" y="76" text-anchor="middle" font-size="5" fill="#6A2080" font-family="Georgia,serif">CREAM</text>
+  </symbol>
+</svg>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT — SPA ROUTING & CART
+════════════════════════════════════════════ -->
+<script>
+  /* ── STATE ──────────────────────────────────── */
+  let currentPage = 'home';
+  let cart = [];
+  let deliveryOption = 'pickup';
+
+  /* ── PRODUCTS DATA ─────────────────────────── */
+  const products = {
+    honey: [
+      { id:'h1', name:'Raw Highveld Honey',    cat:'Honey', price:120, size:'500 g', icon:'img-honey-raw',    desc:'Pure, unfiltered raw honey harvested from Gauteng wildflowers.' },
+      { id:'h2', name:'Creamed Honey',          cat:'Honey', price:150, size:'500 g', icon:'img-honey-creamed',desc:'Velvety smooth, slow-crystallised honey — perfect for spreading.' },
+      { id:'h3', name:'Raw Honey with Comb',    cat:'Honey', price:190, size:'500 g', icon:'img-honey-comb',  desc:'Raw honey bottled with a chunk of natural honeycomb inside.' },
+      { id:'h4', name:'Bulk Raw Honey',         cat:'Honey', price:230, size:'1 kg',  icon:'img-honey-bulk',  desc:'Our bestselling raw honey in a generous 1 kg jar — great value.' },
+    ],
+    beeswax: [
+      { id:'bw1', name:'Natural Lip Balm',      cat:'Beeswax', price:65,  size:'10 g',      icon:'img-beeswax-lip',   desc:'Pure beeswax lip balm with shea butter and a hint of honey.' },
+      { id:'bw2', name:'Beeswax Moisturiser',   cat:'Beeswax', price:180, size:'100 ml',    icon:'img-beeswax-moist', desc:'Rich, healing skin cream blended with natural beeswax and oils.' },
+      { id:'bw3', name:'Hand-Poured Candle',    cat:'Beeswax', price:95,  size:'~40 hrs',   icon:'img-beeswax-candle',desc:'Naturally scented beeswax pillar candle, slow-burning and clean.' },
+      { id:'bw4', name:'Foundation Sheets',     cat:'Beeswax', price:280, size:'Pack of 10', icon:'img-beeswax-sheet', desc:'Hexagonal beeswax foundation sheets, ready to fit Langstroth frames.' },
+    ],
+    propolis: [
+      { id:'p1', name:'Propolis Tincture',      cat:'Propolis', price:160, size:'30 ml',   icon:'img-propolis-tincture',desc:'High-strength liquid propolis extract with easy dropper applicator.' },
+      { id:'p2', name:'Propolis Capsules',      cat:'Propolis', price:220, size:'60 caps', icon:'img-propolis-capsules',desc:'Standardised propolis extract in easy-to-swallow vegetarian capsules.' },
+      { id:'p3', name:'Propolis Throat Spray',  cat:'Propolis', price:145, size:'30 ml',   icon:'img-propolis-spray',  desc:'Soothing throat spray combining propolis with natural menthol.' },
+      { id:'p4', name:'Propolis Skin Cream',    cat:'Propolis', price:185, size:'50 ml',   icon:'img-propolis-cream',  desc:'Gentle blemish cream harnessing propolis\'s natural antimicrobial action.' },
+    ],
+  };
+
+  /* ── NAVIGATION ─────────────────────────────── */
+  function openNav()  { document.getElementById('navPanel').classList.add('open'); document.getElementById('navOverlay').classList.add('open'); }
+  function closeNav() { document.getElementById('navPanel').classList.remove('open'); document.getElementById('navOverlay').classList.remove('open'); }
+
+  function go(page) {
+    closeNav();
+    currentPage = page;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── CART ─────────────────────────────────── */
+  function addToCart(id) {
+    const all = [...products.honey, ...products.beeswax, ...products.propolis];
+    const item = all.find(p => p.id === id);
+    if (!item) return;
+    const existing = cart.find(c => c.id === id);
+    if (existing) { existing.qty++; }
+    else { cart.push({ ...item, qty: 1 }); }
+    updateBadge();
+    showToast(`🛒  "${item.name}" added to cart`);
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(c => c.id !== id);
+    updateBadge();
+    render();
+  }
+
+  function changeQty(id, delta) {
+    const item = cart.find(c => c.id === id);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    render();
+  }
+
+  function cartTotal() { return cart.reduce((s, c) => s + c.price * c.qty, 0); }
+
+  function updateBadge() {
+    const count = cart.reduce((s, c) => s + c.qty, 0);
+    const badge = document.getElementById('cartBadge');
+    badge.textContent = count;
+    badge.classList.toggle('show', count > 0);
+  }
+
+  /* ── TOAST ─────────────────────────────────── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  /* ── PRODUCT SVG HELPER ──────────────────────── */
+  function svgUse(id, w=80, h=96) {
+    return `<svg viewBox="0 0 100 120" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg"><use href="#${id}"/></svg>`;
+  }
+
+  /* ── PAGES ─────────────────────────────────── */
+  function pageHome() {
+    return `
+    <div class="home-intro page-enter">
+      <h2>South Africa's Urban Apiarists</h2>
+      <div class="divider"></div>
+      <p>Bee Wise Eco Services operates daily throughout <strong>Gauteng, South Africa</strong>, bringing expert, ethical beekeeping to urban and peri-urban environments. Our team of passionate apiarists is dedicated to the conservation and responsible management of the African honey bee.</p>
+      <p>We offer professional <strong>pollination services</strong>, humane <strong>bee removals &amp; relocations</strong>, and a curated range of <strong>natural bee-derived products</strong> — all with the utmost respect for bees and the ecosystems they sustain.</p>
+    </div>
+
+    <div class="services-grid page-enter">
+      <div class="svc-card" onclick="go('pollination')">
+        <div class="ico">🌸</div>
+        <h3>Pollination Services</h3>
+        <p>Hive deployment across South Africa to boost crop yields, improve fruit &amp; nut production, and increase agricultural productivity.</p>
+      </div>
+      <div class="svc-card" onclick="go('removals')">
+        <div class="ico">🐝</div>
+        <h3>Bee Removals</h3>
+        <p>Safe, ethical removal and relocation of bee colonies from homes, businesses, and urban spaces — without extermination.</p>
+      </div>
+      <div class="svc-card" onclick="go('honey')">
+        <div class="ico">🍯</div>
+        <h3>Products &amp; Shop</h3>
+        <p>Raw honey, beeswax goods, and propolis health products — pure, natural, and harvested with care.</p>
+      </div>
+    </div>
+
+    <div class="supply-section page-enter">
+      <h2>Equipment &amp; Supplies</h2>
+      <p class="page-subtitle">We supply a full range of professional beekeeping equipment for hobbyists and commercial operations alike.</p>
+      <div class="supply-grid">
+        <div class="supply-item"><strong>Full Bee Suit</strong>Ventilated suit with integrated veil and gloves</div>
+        <div class="supply-item"><strong>Smoker</strong>Stainless steel bellow smoker for colony inspection</div>
+        <div class="supply-item"><strong>Hive Tool</strong>Stainless J-hive tool for frame separation</div>
+        <div class="supply-item"><strong>Langstroth Hive Box</strong>10-frame deep or medium super box sets</div>
+        <div class="supply-item"><strong>Foundation Frames</strong>Beeswax or plastic foundation in wooden frames</div>
+        <div class="supply-item"><strong>Queen Excluder</strong>Metal or plastic excluder for brood management</div>
+        <div class="supply-item"><strong>Bee Brush</strong>Natural bristle brush for gentle bee removal</div>
+        <div class="supply-item"><strong>Honey Extractor</strong>Tangential and radial extractors — manual &amp; electric</div>
+        <div class="supply-item"><strong>Uncapping Knife</strong>Heated electric knife for wax cappings</div>
+        <div class="supply-item"><strong>Honey Storage Tanks</strong>Food-grade stainless tanks with honey gate</div>
+        <div class="supply-item"><strong>Frame Feeders</strong>Top and division board feeders for supplementary feeding</div>
+        <div class="supply-item"><strong>Pollen Traps</strong>Bottom-board and entrance traps for pollen collection</div>
+      </div>
+    </div>
+    `;
+  }
+
+  function pagePollination() {
+    return `
+    <div class="svc-content page-enter">
+      <div style="text-align:center;margin-bottom:42px;">
+        <h1 class="page-title">Pollination Services</h1>
+        <p class="page-subtitle">Helping South African farmers and growers unlock the full potential of their crops through managed African honey bee colonies.</p>
+      </div>
+
+      <h3>Service Coverage</h3>
+      <p>We provide professional pollination services across <strong>South Africa</strong>, with the exception of the <strong>Western Cape</strong>. This restriction exists to protect the ecological balance of the region — we work exclusively with <em>African honey bees (Apis mellifera scutellata)</em>, which are genetically incompatible with the Cape honey bee <em>(Apis mellifera capensis)</em> subspecies native to the Western Cape. Introducing African bees to that ecosystem could have devastating consequences for the local bee population and biodiversity.</p>
+
+      <div style="margin:18px 0 28px;">
+        <span class="coverage-badge">✓ Gauteng</span>
+        <span class="coverage-badge">✓ Limpopo</span>
+        <span class="coverage-badge">✓ Mpumalanga</span>
+        <span class="coverage-badge">✓ North West</span>
+        <span class="coverage-badge">✓ Free State</span>
+        <span class="coverage-badge">✓ KwaZulu-Natal</span>
+        <span class="coverage-badge">✓ Northern Cape</span>
+        <span class="coverage-badge">✓ Eastern Cape</span>
+        <span class="coverage-badge" style="opacity:0.5;text-decoration:line-through;">✗ Western Cape</span>
+      </div>
+
+      <h3>What Pollination Services Involve</h3>
+      <p>Our team delivers managed hives to your farm or orchard at the optimal time in your crop's flowering cycle. We place and monitor colonies strategically across your land to ensure maximum flower visitation and pollen transfer. Hives are managed throughout the deployment period, with regular inspections to ensure colony health and productivity. We collect the hives after the flowering period and settle them back at our apiaries.</p>
+
+      <h3>Why It Matters</h3>
+      <div class="benefit-list">
+        <div class="benefit">
+          <div class="benefit-ico">🌾</div>
+          <div class="benefit-text">
+            <strong>Improved Crop Yields</strong>
+            Managed pollination increases the percentage of flowers that successfully set seed or fruit, directly boosting your harvest volume.
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">🍎</div>
+          <div class="benefit-text">
+            <strong>Better Fruit &amp; Nut Quality</strong>
+            Thorough pollination leads to more uniformly sized, better-shaped, and more nutritious fruit — commanding higher market prices.
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">📈</div>
+          <div class="benefit-text">
+            <strong>Increased Agricultural Productivity</strong>
+            Across all pollinator-dependent crops — sunflowers, avocados, macadamias, citrus, berries, and more — managed bee colonies can increase yield by 15–30%.
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">🌍</div>
+          <div class="benefit-text">
+            <strong>Eco-Responsible Practice</strong>
+            Our African bees are robust, locally adapted pollinators. Using them supports biodiversity and reduces reliance on pesticides.
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:28px;"><em>Interested in a pollination package? Contact us at <strong>081 305 4398</strong> or <strong>ryangebhardt0@gmail.com</strong> and we'll tailor a solution for your operation.</em></p>
+    </div>
+    `;
+  }
+
+  function pageRemovals() {
+    return `
+    <div class="svc-content page-enter">
+      <div style="text-align:center;margin-bottom:42px;">
+        <h1 class="page-title">Bee Removals</h1>
+        <p class="page-subtitle">Safe, humane, and professional removal and relocation of bee colonies across Gauteng and surrounding areas.</p>
+      </div>
+
+      <h3>Our Approach</h3>
+      <p>At Bee Wise Eco Services, we believe every bee colony is a precious ecological asset. When bees establish themselves in an inconvenient location — inside a wall cavity, under a roof, in a tree hollow, or near a building entrance — our first and foremost aim is always <strong>safe relocation, not extermination</strong>.</p>
+      <p>Our trained apiarists assess each situation carefully, using ethical live-removal techniques to capture the queen, workers, brood, and comb. The colony is then transported and re-established in a managed hive at one of our apiaries or a suitable alternative location, where it can continue contributing to the environment.</p>
+
+      <h3>Who We Serve</h3>
+      <div class="benefit-list">
+        <div class="benefit">
+          <div class="benefit-ico">🏠</div>
+          <div class="benefit-text">
+            <strong>Residential Properties</strong>
+            Swarms on roof eaves, inside walls, in garden sheds, and in ceiling voids — we safely remove and relocate them.
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">🏢</div>
+          <div class="benefit-text">
+            <strong>Commercial &amp; Business Premises</strong>
+            Colonies in signage, air-conditioning units, factory roofing, and service ducts — handled with minimal disruption to your operations.
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">🌳</div>
+          <div class="benefit-text">
+            <strong>Urban &amp; Peri-Urban Environments</strong>
+            Parks, schools, community spaces — we work with municipalities and property managers to resolve bee conflicts humanely.
+          </div>
+        </div>
+      </div>
+
+      <h3>Why Choose Relocation Over Extermination?</h3>
+      <p>South Africa has seen significant colony loss over recent years due to pesticide use, habitat destruction, and disease. Every colony we save and relocate is one more working unit benefiting our agricultural ecosystem. African honey bees are tenacious, disease-resistant, and extraordinarily effective pollinators — they deserve to live.</p>
+      <p>When extermination is the only viable option (extremely rare cases involving risk to human life), we handle it responsibly, safely, and only as a last resort.</p>
+
+      <p style="margin-top:28px;"><em>For urgent removals or quotations, call us on <strong>081 305 4398</strong> or email <strong>ryangebhardt0@gmail.com</strong>. We respond promptly.</em></p>
+    </div>
+    `;
+  }
+
+  function productPage(category, intro) {
+    const items = products[category];
+    const cards = items.map(p => `
+      <div class="product-card">
+        <div class="product-img">
+          ${svgUse(p.icon, 82, 98)}
+        </div>
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${p.desc} <em style="font-size:12px;color:#A08050;">(${p.size})</em></div>
+          <div class="product-price">R ${p.price.toFixed(2)}</div>
+          <button class="atc-btn" onclick="addToCart('${p.id}')">Add to Cart</button>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      ${intro}
+      <div class="product-grid page-enter">${cards}</div>
+    `;
+  }
+
+  function pageHoney() {
+    const intro = `
+      <div style="text-align:center;margin-bottom:48px;" class="page-enter">
+        <h1 class="page-title">🍯 Honey</h1>
+        <div class="divider"></div>
+        <p class="page-subtitle">Pure, raw honey harvested from African honey bee hives across the Highveld. No heating, no filtering, no additives — just honey exactly as nature intended.</p>
+      </div>`;
+    return productPage('honey', intro);
+  }
+
+  function pageBeeswax() {
+    const intro = `
+      <div style="text-align:center;margin-bottom:48px;" class="page-enter">
+        <h1 class="page-title">🕯️ Beeswax</h1>
+        <div class="divider"></div>
+        <p class="page-subtitle">Natural beeswax products crafted in small batches — from nourishing skincare to hand-poured candles and hive supplies. Clean, pure, and sustainably sourced.</p>
+      </div>`;
+    return productPage('beeswax', intro);
+  }
+
+  function pagePropolis() {
+    const intro = `
+      <div class="page-enter">
+        <div style="text-align:center;margin-bottom:38px;">
+          <h1 class="page-title">💊 Propolis</h1>
+          <div class="divider"></div>
+        </div>
+        <div class="info-box">
+          <h3>What is Propolis?</h3>
+          <p>Propolis is a resinous compound that honey bees collect from tree buds, sap flows, and other botanical sources. Bees process it with enzymes and beeswax to create a remarkable natural substance used to seal, sterilise, and protect the hive.</p>
+          <p>Traditionally used across cultures for millennia, propolis is prized for its <strong>antimicrobial, anti-inflammatory, antifungal, and antioxidant</strong> properties. Modern research has explored its applications in wound healing, oral health, immune support, and skin care.</p>
+          <div class="caution-box">
+            <p><strong>⚠️ Important Safety Information</strong>
+            Propolis may cause allergic reactions in individuals sensitive to bee products, tree resins, or certain plants. Do not use propolis products if you are allergic to honey, beeswax, or pollen. Consult a qualified healthcare provider before using propolis supplements, particularly if you are pregnant, breastfeeding, taking medication, or managing a medical condition. These products are not intended to diagnose, treat, cure, or prevent any disease.</p>
+          </div>
+        </div>
+      </div>`;
+    return intro + `<div class="product-grid page-enter">${products.propolis.map(p => `
+      <div class="product-card">
+        <div class="product-img">${svgUse(p.icon, 80, 96)}</div>
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${p.desc} <em style="font-size:12px;color:#A08050;">(${p.size})</em></div>
+          <div class="product-price">R ${p.price.toFixed(2)}</div>
+          <button class="atc-btn" onclick="addToCart('${p.id}')">Add to Cart</button>
+        </div>
+      </div>`).join('')}</div>`;
+  }
+
+  function pageCart() {
+    if (cart.length === 0) {
+      return `
+        <div class="cart-wrap-page">
+          <h1 class="page-title" style="margin-bottom:8px;">Shopping Cart</h1>
+          <div class="divider"></div>
+          <div class="empty-cart page-enter">
+            <div class="eco">🛒</div>
+            <p>Your cart is empty.<br>Browse our honey, beeswax, and propolis products to get started.</p>
+            <button class="shop-btn" onclick="go('honey')">Shop Honey</button>
+            &nbsp;
+            <button class="shop-btn" onclick="go('beeswax')" style="background:var(--forest)">Shop Beeswax</button>
+          </div>
+        </div>`;
+    }
+
+    const items = cart.map(c => `
+      <div class="cart-item">
+        <div class="cart-item-img">${svgUse(c.icon, 42, 50)}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${c.name}</div>
+          <div class="cart-item-cat">${c.cat} · ${c.size}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty('${c.id}',-1)">−</button>
+            <span class="qty-num">${c.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${c.id}',1)">+</button>
+          </div>
+        </div>
+        <div class="cart-item-price">R ${(c.price * c.qty).toFixed(2)}</div>
+        <button class="cart-remove" onclick="removeFromCart('${c.id}')" aria-label="Remove item">×</button>
+      </div>`).join('');
+
+    const total = cartTotal();
+    const delivery = deliveryOption === 'delivery' ? 0 : 0; // TBD
+
+    return `
+      <div class="cart-wrap-page page-enter">
+        <h1 class="page-title" style="margin-bottom:8px;">Shopping Cart</h1>
+        <div class="divider"></div>
+        <div style="margin-top:28px;">${items}</div>
+        <div class="cart-summary">
+          <h3>Order Summary</h3>
+          <div class="sum-row"><span>Subtotal</span><span>R ${total.toFixed(2)}</span></div>
+          <div class="sum-row"><span>Delivery</span><span id="deliveryFee">${deliveryOption === 'pickup' ? 'Free (pickup)' : 'To be confirmed'}</span></div>
+          <div class="sum-row total"><span>Total</span><span>R ${total.toFixed(2)}</span></div>
+
+          <div class="delivery-opts">
+            <h4>Delivery or Pickup?</h4>
+            <label class="d-option">
+              <input type="radio" name="delivery" value="pickup" ${deliveryOption==='pickup'?'checked':''} onchange="setDelivery('pickup')"/>
+              🏪 &nbsp;<strong>Pickup</strong> — Collect from our Gauteng location (free)
+            </label>
+            <label class="d-option">
+              <input type="radio" name="delivery" value="delivery" ${deliveryOption==='delivery'?'checked':''} onchange="setDelivery('delivery')"/>
+              🚚 &nbsp;<strong>Delivery</strong> — We'll bring it to you
+            </label>
+            ${deliveryOption === 'delivery' ? `
+            <div class="d-note">
+              🔔 <strong>Please note:</strong> Deliveries within Johannesburg are available. Deliveries outside Johannesburg incur an additional fee — the exact cost will be confirmed with you after your order is placed.
+            </div>` : ''}
+          </div>
+
+          <button class="checkout-btn" onclick="doCheckout()">
+            🔒 &nbsp; Proceed to Secure Payment
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function setDelivery(val) {
+    deliveryOption = val;
+    render();
+  }
+
+  function doCheckout() {
+    showToast('🔒 Redirecting to secure payment gateway…');
+    setTimeout(() => {
+      alert('Payment gateway integration coming soon.\n\nFor now, please contact us:\n📞 081 305 4398\n✉️ ryangebhardt0@gmail.com\n\nReference your cart total: R ' + cartTotal().toFixed(2));
+    }, 800);
+  }
+
+  /* ── RENDER ─────────────────────────────────── */
+  function render() {
+    const main = document.getElementById('mainContent');
+    const pages = {
+      home:        pageHome,
+      pollination: pagePollination,
+      removals:    pageRemovals,
+      honey:       pageHoney,
+      beeswax:     pageBeeswax,
+      propolis:    pagePropolis,
+      cart:        pageCart,
+    };
+    main.innerHTML = (pages[currentPage] || pageHome)();
+    updateBadge();
+  }
+
+  /* ── INIT ───────────────────────────────────── */
+  render();
+</script>
+</body>
+</html>
+```
