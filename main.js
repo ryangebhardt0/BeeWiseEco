@@ -5,12 +5,21 @@
 
   /* ---------- Products ---------- */
   const PRODUCTS = [
-    { id: "raw-fynbos-500",    name: "Raw Fynbos Honey",    blurb: "Unfiltered, single-origin, harvested in the Overberg.",  size: "500g jar",     price: 165, tag: "Best seller", swatch: "linear-gradient(135deg, #f4a821 0%, #d97706 100%)", icon: "jar"     },
-    { id: "wildflower-250",    name: "Wildflower Honey",    blurb: "Light, floral, perfect for tea or toast.",                size: "250g jar",     price:  95,                     swatch: "linear-gradient(135deg, #ffd24a 0%, #e8a317 100%)", icon: "jar"     },
-    { id: "beeswax-block",     name: "Pure Beeswax Block",  blurb: "100% filtered beeswax. Candles, balms, polish, wraps.",   size: "200g block",   price:  85,                     swatch: "linear-gradient(135deg, #f0c060 0%, #c77a1b 100%)", icon: "block"   },
-    { id: "propolis-tincture", name: "Propolis Tincture",   blurb: "Raw propolis in food-grade alcohol. Daily immunity.",     size: "30ml dropper", price: 145, tag: "New",         swatch: "linear-gradient(135deg, #8b5a2b 0%, #3a1f10 100%)", icon: "dropper" },
-    { id: "comb-honey",        name: "Honeycomb Slab",      blurb: "Cut straight from the frame. Edible wax & all.",          size: "300g",         price: 220,                     swatch: "linear-gradient(135deg, #ffc629 0%, #b07509 100%)", icon: "comb"    },
-    { id: "beeswax-candles",   name: "Beeswax Tea Lights",  blurb: "Smokeless, slow-burning. Set of 12.",                     size: "12 pack",      price: 110,                     swatch: "linear-gradient(135deg, #fff1b8 0%, #d9a441 100%)", icon: "candle"  },
+    // Honey
+    { id: "honey-raw-500",       cat: "honey",    name: "Raw Highveld Honey",    blurb: "Pure, unfiltered raw honey harvested from Gauteng wildflowers.",              size: "500g jar",     price: 120,                     swatch: "linear-gradient(135deg, #f4a821 0%, #d97706 100%)", icon: "jar"      },
+    { id: "honey-creamed-500",   cat: "honey",    name: "Creamed Honey",         blurb: "Velvety smooth, slow-crystallised honey — perfect for spreading.",            size: "500g jar",     price: 150,                     swatch: "linear-gradient(135deg, #ffd24a 0%, #e8a317 100%)", icon: "jar"      },
+    { id: "honey-comb-500",      cat: "honey",    name: "Raw Honey with Comb",   blurb: "Raw honey bottled with a chunk of natural honeycomb inside.",                 size: "500g jar",     price: 190,                     swatch: "linear-gradient(135deg, #ffc629 0%, #b07509 100%)", icon: "comb"     },
+    { id: "honey-bulk-1kg",      cat: "honey",    name: "Bulk Raw Honey",        blurb: "Our bestselling raw honey in a generous 1 kg jar — great value.",             size: "1kg jar",      price: 230, tag: "Best seller", swatch: "linear-gradient(135deg, #f0b429 0%, #c77a1b 100%)", icon: "jar"      },
+    // Beeswax
+    { id: "beeswax-lip-balm",    cat: "beeswax",  name: "Natural Lip Balm",      blurb: "Pure beeswax lip balm with shea butter and a hint of honey.",                 size: "10g tin",      price:  65,                     swatch: "linear-gradient(135deg, #fff1b8 0%, #e8b64a 100%)", icon: "tin"      },
+    { id: "beeswax-moisturiser", cat: "beeswax",  name: "Beeswax Moisturiser",   blurb: "Rich, healing skin cream blended with natural beeswax and oils.",             size: "100ml",        price: 180,                     swatch: "linear-gradient(135deg, #ffe08a 0%, #d99c2b 100%)", icon: "tin"      },
+    { id: "beeswax-candle",      cat: "beeswax",  name: "Hand-Poured Candle",    blurb: "Naturally scented beeswax pillar candle, slow-burning and clean.",            size: "~40hr burn",   price:  95,                     swatch: "linear-gradient(135deg, #f0c060 0%, #c77a1b 100%)", icon: "candle"   },
+    { id: "beeswax-foundation",  cat: "beeswax",  name: "Foundation Sheets",     blurb: "Hexagonal beeswax foundation sheets, ready to fit Langstroth frames.",        size: "pack of 10",   price: 280,                     swatch: "linear-gradient(135deg, #ffc629 0%, #b07509 100%)", icon: "comb"     },
+    // Propolis
+    { id: "propolis-tincture",   cat: "propolis", name: "Propolis Tincture",     blurb: "High-strength liquid propolis extract with easy dropper applicator.",         size: "30ml dropper", price: 160,                     swatch: "linear-gradient(135deg, #8b5a2b 0%, #3a1f10 100%)", icon: "dropper"  },
+    { id: "propolis-capsules",   cat: "propolis", name: "Propolis Capsules",     blurb: "Standardised propolis extract in easy-to-swallow vegetarian capsules.",       size: "60 caps",      price: 220,                     swatch: "linear-gradient(135deg, #a06a33 0%, #4a2a12 100%)", icon: "capsules" },
+    { id: "propolis-spray",      cat: "propolis", name: "Propolis Throat Spray", blurb: "Soothing throat spray combining propolis with natural menthol.",              size: "30ml",         price: 145,                     swatch: "linear-gradient(135deg, #96602c 0%, #2e180a 100%)", icon: "spray"    },
+    { id: "propolis-cream",      cat: "propolis", name: "Propolis Skin Cream",   blurb: "Gentle blemish cream harnessing propolis's natural antimicrobial action.",    size: "50ml",         price: 185,                     swatch: "linear-gradient(135deg, #8b5a2b 0%, #46270f 100%)", icon: "tin"      },
   ];
 
   const HONEY = "#FFC629";
@@ -55,14 +64,34 @@
         <path d="M51 32 q-2 -6 0 -10 q2 4 0 10" fill="#F26B38"/>
         <path d="M71 46 q-2 -6 0 -10 q2 4 0 10" fill="#F26B38"/>
       </svg>`;
+    if (kind === "tin") return `
+      <svg viewBox="0 0 100 100" width="${s}" height="${s}" aria-hidden="true">
+        <rect x="24" y="28" width="52" height="14" rx="7" fill="#fff7d8" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="20" y="42" width="60" height="36" rx="6" fill="${HONEY}" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="34" y="52" width="32" height="16" rx="2" fill="#fff" stroke="${INK}" stroke-width="1.5"/>
+      </svg>`;
+    if (kind === "capsules") return `
+      <svg viewBox="0 0 100 100" width="${s}" height="${s}" aria-hidden="true">
+        <rect x="36" y="12" width="28" height="12" rx="3" fill="${INK}"/>
+        <path d="M32 28 L68 28 L68 78 Q68 86 60 86 L40 86 Q32 86 32 78 Z" fill="#8B5A2B" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="38" y="44" width="24" height="16" rx="2" fill="#fff" stroke="${INK}" stroke-width="1.5"/>
+        <rect x="40" y="68" width="12" height="6" rx="3" fill="${HONEY}" stroke="${INK}" stroke-width="1.5"/>
+        <rect x="50" y="74" width="12" height="6" rx="3" fill="${HONEY}" stroke="${INK}" stroke-width="1.5"/>
+      </svg>`;
+    if (kind === "spray") return `
+      <svg viewBox="0 0 100 100" width="${s}" height="${s}" aria-hidden="true">
+        <rect x="40" y="8" width="14" height="12" rx="2" fill="${INK}"/>
+        <rect x="54" y="10" width="12" height="7" rx="3" fill="${INK}"/>
+        <rect x="36" y="20" width="22" height="10" rx="2" fill="${INK}" opacity="0.85"/>
+        <path d="M32 34 L62 34 L60 80 Q60 88 52 88 L40 88 Q32 88 32 80 Z" fill="#96602C" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="38" y="50" width="18" height="16" rx="2" fill="#fff" stroke="${INK}" stroke-width="1.5"/>
+      </svg>`;
     return "";
   }
 
-  /* ---------- Render product grid ---------- */
-  function renderProducts() {
-    const grid = document.getElementById("product-grid");
-    if (!grid) return;
-    grid.innerHTML = PRODUCTS.map(p => `
+  /* ---------- Render product grids ---------- */
+  function productCardHtml(p) {
+    return `
       <article class="product reveal" data-id="${p.id}">
         <div class="product__media" style="background:${p.swatch}">
           ${p.tag ? `<span class="product__tag">${p.tag}</span>` : ""}
@@ -82,7 +111,21 @@
             </button>
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+  }
+
+  function renderProducts() {
+    const catGrids = document.querySelectorAll("[data-product-category]");
+    if (catGrids.length) {
+      catGrids.forEach(grid => {
+        const cat = grid.getAttribute("data-product-category");
+        grid.innerHTML = PRODUCTS.filter(p => p.cat === cat).map(productCardHtml).join("");
+      });
+      return;
+    }
+    const grid = document.getElementById("product-grid");
+    if (!grid) return;
+    grid.innerHTML = PRODUCTS.map(productCardHtml).join("");
   }
 
   /* ---------- Honeycomb pulse ---------- */
@@ -394,6 +437,14 @@
     document.getElementById("cart-open")?.addEventListener("click", openCart);
     document.getElementById("cart-close")?.addEventListener("click", closeCart);
     document.getElementById("cart-scrim")?.addEventListener("click", closeCart);
+    document.getElementById("cart-checkout")?.addEventListener("click", () => {
+      if (cartCount() === 0) return;
+      alert(
+        "Payment gateway integration coming soon.\n\n" +
+        "For now, please contact us:\nTel: 081 305 4398\nEmail: ryangebhardt0@gmail.com\n\n" +
+        "Reference your cart total: R " + cartTotal().toFixed(2)
+      );
+    });
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
