@@ -8,8 +8,10 @@
   --wash: #FFF8E5;
   --line: rgba(17,17,17,0.10);
   --line-strong: rgba(17,17,17,0.18);
-  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  /* Supplied by next/font in app/layout.tsx (self-hosted at build time); the
+     quoted names remain as a fallback. */
+  --display: var(--font-display), "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --body: var(--font-body), "DM Sans", ui-sans-serif, system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -120,15 +122,20 @@ section { position: relative; }
   letter-spacing: -0.02em;
 }
 .nav__brand-mark {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  flex: none;
   display: grid;
   place-items: center;
-  background: var(--honey);
   border-radius: 50%;
   position: relative;
 }
-.nav__brand-mark svg { display: block; }
+.nav__brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .nav__links {
   display: flex;
   align-items: center;
@@ -644,6 +651,27 @@ section { position: relative; }
 }
 .note-box strong { display: block; color: var(--ink); margin-bottom: 6px; }
 
+/* A prose panel under a category grid, for a range that needs more explaining
+   than the lede has room for. Louder than .note-box, which is fine print. */
+.cat-feature {
+  margin-top: 44px;
+  border: 1.5px solid var(--ink);
+  border-radius: 24px;
+  background: var(--wash);
+  padding: 44px 48px;
+}
+.cat-feature__title {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+.cat-feature p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 720px;
+  margin: 0 0 16px;
+}
+.cat-feature p:last-child { margin-bottom: 0; }
+
 /* ---------- Equipment & supplies ---------- */
 .equipment { margin-top: 90px; }
 .equipment__title { font-size: 34px; }
@@ -733,6 +761,8 @@ section { position: relative; }
 @media (max-width: 640px) {
   .product-grid--four { grid-template-columns: 1fr; }
   .svc-cta { padding: 40px 24px; }
+  .cat-feature { padding: 32px 24px; border-radius: 18px; }
+  .cat-feature__title { font-size: 24px; }
 }
 
 /* ---------- Reduced motion ---------- */
@@ -744,4 +774,71 @@ section { position: relative; }
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; }
+}
+
+/* ============ Storefront additions (Next.js rebuild) ============ */
+
+/* Stock-aware product cards. `.badge--off` already dims and strikes through;
+   these keep a sold-out card legible rather than merely faded. */
+.product.badge--off { pointer-events: auto; }
+.product.badge--off .product__media { filter: grayscale(0.6); }
+.product__add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--ink-soft);
+}
+
+/* Shown in place of a grid when the catalogue can't be reached. */
+.product-grid__notice {
+  padding: 32px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 14px;
+  background: var(--wash);
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.cart-item__limit { font-size: 12px; color: var(--coral); margin-top: 4px; }
+.cart-error { color: var(--coral); font-size: 14px; margin: 8px 0 0; }
+
+/* ---- Checkout & order pages ---- */
+.checkout { max-width: 760px; }
+.checkout .section-title { margin-bottom: 12px; }
+
+.checkout__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 32px 0 24px;
+  font-size: 15px;
+}
+.checkout__table th {
+  text-align: left;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--line-strong);
+}
+.checkout__table td { padding: 14px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.checkout__table tfoot td { border-bottom: none; padding-top: 16px; }
+.checkout__size { color: var(--ink-soft); }
+.checkout__note { color: var(--ink-soft); font-size: 13px; padding-top: 4px !important; }
+.checkout__row--short td { background: rgba(242,107,56,0.06); }
+.checkout__short { color: var(--coral); font-size: 13px; margin-top: 6px; }
+.checkout__error {
+  color: var(--coral);
+  background: rgba(242,107,56,0.08);
+  border: 1px solid rgba(242,107,56,0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+}
+.checkout__fineprint { color: var(--ink-soft); font-size: 13px; margin-top: 24px; }
+
+@media (max-width: 720px) {
+  .checkout__table { font-size: 14px; }
 }
